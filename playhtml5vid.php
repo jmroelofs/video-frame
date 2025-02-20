@@ -14,6 +14,7 @@
 
     Changelist
 
+    2.03 [19-02-2025] refactor paths and put on github
     2.02 [16-02-2025] fix aspect ratio for all video iframes in wf-mediabox
     2.01 [01-02-2025] fix a typo 1.25 -> 0.125
     2.01 [22-10-2024] use video.js hotkeys
@@ -71,8 +72,8 @@
 
 define( '_JEXEC', 1 );
 
-define('SCRIPT', 'node_modules/video.js/dist/video.min.js');
-define('CSS', 'node_modules/video.js/dist/video-js.min.css');
+define('SCRIPT', 'video-frame/node_modules/video.js/dist/video.min.js');
+define('CSS', 'video-frame/node_modules/video.js/dist/video-js.min.css');
 
 $extensions_and_mime_types = array(
     'mp4'  => 'video/mp4',
@@ -94,7 +95,7 @@ $autoplay = ( $_GET['autoplay'] !== '0' );
 $ext = pathinfo($file, PATHINFO_EXTENSION);
 
 // for security
-if (!isset($file) || !$extensions_and_mime_types[$ext] || !file_exists($file)) {
+if (!isset($file) || !$extensions_and_mime_types[$ext] || !file_exists('../' . $file)) {
     // http_response_code(404);
     // echo '404 The video you are looking for was not found';
     require __DIR__.'/../index.php';
@@ -114,19 +115,18 @@ $current_url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 if (strrpos($current_url,'?autoplay') !== false) {
     $current_url = substr($current_url, 0, strrpos($current_url, '?autoplay'));
 }
-$our_directory = rtrim(dirname($_SERVER['PHP_SELF']), '/') . '/';
+$our_directory = rtrim(dirname($_SERVER['PHP_SELF']), 'video-frame');
 $our_server = $protocol . $_SERVER['SERVER_NAME'];
 $short_link = implode('/', array_map('rawurlencode', explode('/', $our_directory . $file)));
 $full_link = $our_server.$short_link;
-$download_name = 'Roelofs Coaching - ' . basename(dirname($file)) . ' - ' . basename($file);
 $pretty_file_name = basename($file, '.' . $ext);
 $short_image_link = remove_extension($short_link) . '.jpg';
 $full_image_link = $our_server . $short_image_link;
-$image = remove_extension($file) . '.jpg';
+$image = remove_extension('../' . $file) . '.jpg';
 if (file_exists($image)){
     list($width, $height, $image_type, $image_attr) = getimagesize($image);
 }
-$file_time = date(DATE_ATOM, filemtime($file));
+$file_time = date(DATE_ATOM, filemtime('../' . $file));
 
 ?>
 <!DOCTYPE html>
@@ -185,7 +185,7 @@ $file_time = date(DATE_ATOM, filemtime($file));
         <?php endif ?>
     }
 </style>
-<?php include __DIR__.'/klimwoordenboek/analytics.php'; ?>
+<?php include __DIR__.'/../klimwoordenboek/analytics.php'; ?>
 <script type="application/ld+json">
 {
     "@context": "http://schema.org/",
@@ -277,8 +277,8 @@ const isIframe = (() => {
 
 <?php  if (isset($height, $width)): ?>
     if (isIframe && (document.referrer.indexOf(document.domain) !== -1)) {
-		const jQuery = window.parent.jQuery;
-		jQuery('#mediabox-iframe-fix').remove();
+        const jQuery = window.parent.jQuery;
+        jQuery('#mediabox-iframe-fix').remove();
         jQuery(`<style id="mediabox-iframe-fix">
             .wf-mediabox-content-item {
                 padding-bottom: <?php echo round(100 * $height / $width, 6); ?>% !important;
