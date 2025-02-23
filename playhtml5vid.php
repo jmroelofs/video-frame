@@ -2,7 +2,7 @@
 /*
     playhtml5vid
 
-    Version 2.01
+    Version 2.05
 
     Uses video.js to play a video in it's own window.
     Path of filename should be relative to path of this file.
@@ -14,13 +14,14 @@
 
     Changelist
 
-    2.03 [19-02-2025] refactor paths and put on github
-    2.02 [16-02-2025] fix aspect ratio for all video iframes in wf-mediabox
-    2.01 [01-02-2025] fix a typo 1.25 -> 0.125
+    2.05 [23-02-2025] center video vertically
+    2.04 [19-02-2025] refactor paths and put on github
+    2.03 [16-02-2025] fix aspect ratio for all video iframes in wf-mediabox
+    2.02 [01-02-2025] fix a typo 1.25 -> 0.125
     2.01 [22-10-2024] use video.js hotkeys
     2.00 [19-10-2024] use video.js
-	1.45 [06-09-2023] add theme color
-	1.44 [29-05-2021] add 1by1 and 3by4 handling of iframes in jcemediabox 2.1
+    1.45 [06-09-2023] add theme color
+    1.44 [29-05-2021] add 1by1 and 3by4 handling of iframes in jcemediabox 2.1
     1.43 [18-10-2020] disable aspect ratio fix (too unpredictable), change player library address
     1.42 [18-10-2020] fix aspect ratio on newer jcemediabox (2.x)
     1.41 [21-09-2019] The API method jwplayer().addButton() is disabled in the free edition of JW Player.
@@ -52,7 +53,7 @@
     1.21 [23-06-2015] added download possibility
     1.20 [16-06-2015] slowmo/normal possibilities (only on desktop)
     1.19 [25-03-2015] structurize/prettify php, introduced autoplay variable
-    1.18 [08-10-2014] tweak internal encoding to accomodate � etc. on different servers
+    1.18 [08-10-2014] tweak internal encoding to accomodate ï¿½ etc. on different servers
     1.17 [06-10-2014] use 404 header and message on error
     1.16 [04-10-2014] use javascript to change the parent frame
     1.15 [29-09-2014] upgrade to jwplayer 6.10, make flash secondary
@@ -60,7 +61,7 @@
     1.13 code refactoring
     1.11 add some Open Graph Metadata and improved the security checks
     1.10 also enable for mov and fixed 2 small cosmetic bugs
-    1.9  changes to accomodate special url's (� etc.)
+    1.9  changes to accomodate special url's (ï¿½ etc.)
     1.8  use plugins (slow-mo and shortcuts)
     1.7  always stretch, width and height variables are not used any more
     1.6  Stretch video if it doesn't have a parent frame
@@ -183,6 +184,11 @@ $file_time = date(DATE_ATOM, filemtime('../' . $file));
         <?php  if (isset($height, $width)): ?>
             aspect-ratio: <?php echo round($width / $height, 6) ?>;
         <?php endif ?>
+    }
+
+    #my-player {
+        top: 50%;
+        transform: translateY(-50%);
     }
 </style>
 <?php include __DIR__.'/../klimwoordenboek/analytics.php'; ?>
