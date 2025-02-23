@@ -178,6 +178,7 @@ $file_time = date(DATE_ATOM, filemtime('../' . $file));
     }
 
     #container {
+        display: flex;
         height: 100%;
         max-width: 100%;
         margin: auto;
@@ -187,8 +188,7 @@ $file_time = date(DATE_ATOM, filemtime('../' . $file));
     }
 
     #my-player {
-        top: 50%;
-        transform: translateY(-50%);
+        align-self: center;
     }
 </style>
 <?php include __DIR__.'/../klimwoordenboek/analytics.php'; ?>
