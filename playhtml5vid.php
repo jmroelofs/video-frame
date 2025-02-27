@@ -96,9 +96,7 @@ $autoplay = ( $_GET['autoplay'] !== '0' );
 $ext = pathinfo($file, PATHINFO_EXTENSION);
 
 // for security
-if (!isset($file) || !$extensions_and_mime_types[$ext] || !file_exists('../' . $file)) {
-    // http_response_code(404);
-    // echo '404 The video you are looking for was not found';
+if (!$extensions_and_mime_types[$ext] || !file_exists('../' . $file)) {
     require __DIR__ . '/../index.php';
     exit();
 }
@@ -112,17 +110,16 @@ function remove_extension($filename) {
 $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https://':'http://';
 $current_url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-// to remove the autoplay thingy
-if (strrpos($current_url,'?autoplay') !== false) {
-    $current_url = substr($current_url, 0, strrpos($current_url, '?autoplay'));
+// to remove trailing stuff
+if (strrpos($current_url,'?') !== false) {
+    $current_url = substr($current_url, 0, strrpos($current_url, '?'));
 }
 $our_directory = rtrim(dirname($_SERVER['PHP_SELF']), 'video-frame');
 $our_server = $protocol . $_SERVER['SERVER_NAME'];
 $short_link = implode('/', array_map('rawurlencode', explode('/', $our_directory . $file)));
-$full_link = $our_server.$short_link;
+$full_link = $our_server . $short_link;
 $pretty_file_name = basename($file, '.' . $ext);
-$short_image_link = remove_extension($short_link) . '.jpg';
-$full_image_link = $our_server . $short_image_link;
+$full_image_link = remove_extension($full_link) . '.jpg';
 $image = remove_extension('../' . $file) . '.jpg';
 if (file_exists($image)){
     [$width, $height, $image_type, $image_attr] = getimagesize($image);
