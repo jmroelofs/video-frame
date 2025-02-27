@@ -99,7 +99,7 @@ $ext = pathinfo($file, PATHINFO_EXTENSION);
 if (!isset($file) || !$extensions_and_mime_types[$ext] || !file_exists('../' . $file)) {
     // http_response_code(404);
     // echo '404 The video you are looking for was not found';
-    require __DIR__.'/../index.php';
+    require __DIR__ . '/../index.php';
     exit();
 }
 
@@ -125,7 +125,7 @@ $short_image_link = remove_extension($short_link) . '.jpg';
 $full_image_link = $our_server . $short_image_link;
 $image = remove_extension('../' . $file) . '.jpg';
 if (file_exists($image)){
-    list($width, $height, $image_type, $image_attr) = getimagesize($image);
+    [$width, $height, $image_type, $image_attr] = getimagesize($image);
 }
 $file_time = date(DATE_ATOM, filemtime('../' . $file));
 
@@ -222,7 +222,7 @@ $file_time = date(DATE_ATOM, filemtime('../' . $file));
         class="video-js"
         controls
         preload="auto"
-        poster="<?php echo $short_image_link; ?>"
+        poster="<?php echo $full_image_link; ?>"
     >
         <source src="<?php echo $full_link; ?>" type="<?php $extensions_and_mime_types[$ext]; ?>">
         <p class="vjs-no-js">
