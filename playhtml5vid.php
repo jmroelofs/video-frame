@@ -114,9 +114,9 @@ $current_url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 if (strrpos($current_url,'?') !== false) {
     $current_url = substr($current_url, 0, strrpos($current_url, '?'));
 }
-$our_directory = rtrim(dirname($_SERVER['PHP_SELF']), 'video-frame');
+$parent_directory = rtrim(dirname($_SERVER['PHP_SELF']), 'video-frame');
 $our_server = $protocol . $_SERVER['SERVER_NAME'];
-$short_link = implode('/', array_map('rawurlencode', explode('/', $our_directory . $file)));
+$short_link = implode('/', array_map('rawurlencode', explode('/', $parent_directory . $file)));
 $full_link = $our_server . $short_link;
 $pretty_file_name = basename($file, '.' . $ext);
 $full_image_link = remove_extension($full_link) . '.jpg';
@@ -154,9 +154,9 @@ $file_time = date(DATE_ATOM, filemtime('../' . $file));
 <meta property="og:url" content="<?php echo $current_url; ?>">
 <title>Roelofs Coaching - <?php echo $pretty_file_name; ?></title>
 <link href="<?php echo $current_url; ?>" rel="canonical">
-<link href="<?php echo $our_directory; ?>templates/purity_iii/favicon.ico" rel="shortcut icon" type="image/x-icon">
-<link href="<?php echo $our_directory . CSS; ?>" rel="stylesheet">
-<script src="<?php echo $our_directory . SCRIPT; ?>"></script>
+<link href="<?php echo $parent_directory; ?>templates/purity_iii/favicon.ico" rel="shortcut icon" type="image/x-icon">
+<link href="<?php echo $parent_directory . CSS; ?>" rel="stylesheet">
+<script src="<?php echo $parent_directory . SCRIPT; ?>"></script>
 <style>
     @-ms-viewport     {width: device-width;}
     @-o-viewport      {width: device-width;}
