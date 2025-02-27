@@ -270,16 +270,17 @@ const player = videojs('my-player', {
     }
 });
 
-const isIframe = (() => {
-    try {
-        return window.self !== window.top;
-    } catch(e) {
-        return true;
-    }
-})();
+<?php  if (isset($height, $width) && str_contains($_SERVER['HTTP_REFERER'], $_SERVER['SERVER_NAME'])): ?>
 
-<?php  if (isset($height, $width)): ?>
-    if (isIframe && (document.referrer.indexOf(document.domain) !== -1)) {
+    const isIframe = (() => {
+        try {
+            return window.self !== window.top;
+        } catch(e) {
+            return true;
+        }
+    })();
+
+    if (isIframe) {
         const jQuery = window.parent.jQuery;
         jQuery('#mediabox-iframe-fix').remove();
         jQuery(`<style id="mediabox-iframe-fix">
@@ -290,6 +291,7 @@ const isIframe = (() => {
         </style>`)
         .appendTo('body');
     }
+
 <?php endif ?>
 
 </script>
