@@ -16,25 +16,13 @@ $file = rawurldecode($_GET['file'] ?? '');
 $autoplay = ($_GET['autoplay'] ?? null !== '0');
 
 // for security
-if (! file_exists('../' . $file)) {
-    require __DIR__ . '/../index.php';
-    exit();
-}
-
 $mime_type = mime_content_type('../' . $file);
-
-if (! str_contains($mime_type, 'video')) {
+if (! $mime_type || ! str_contains($mime_type, 'video')) {
     require __DIR__ . '/../index.php';
     exit();
 }
 
-[
-    'extension' => $extension,
-    'filename' => $filename,
-] = pathinfo($file) + [
-    'extension' => '',
-    'filename' => '',
-];
+['extension' => $extension, 'filename' => $filename] = pathinfo($file);
 
 // some household variables
 $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https://':'http://';
@@ -44,8 +32,9 @@ $full_link = $protocol . $_SERVER['SERVER_NAME'] . implode('/', array_map('rawur
 $full_image_link = rtrim($full_link, ".$extension") . '.jpg';
 $image = rtrim('../' . $file, ".$extension") . '.jpg';
 if (file_exists($image)){
-    [$width, $height, $image_type, $image_attr] = getimagesize($image);
+    [$width, $height] = getimagesize($image);
 }
+$pretty_file_name = rawurldecode($filename);
 $file_time = date(DATE_ATOM, filemtime('../' . $file));
 
 ?>
@@ -54,12 +43,12 @@ $file_time = date(DATE_ATOM, filemtime('../' . $file));
 <head prefix="og: http://ogp.me/ns#"><?php /* see: http://ogp.me/ */ ?>
 <meta charset="UTF-8">
 <meta name="keywords" content="video">
-<meta name="description" content="<?php echo $filename; ?> is made and hosted by Roelofs Coaching">
+<meta name="description" content="<?php echo $pretty_file_name; ?> is made and hosted by Roelofs Coaching">
 <meta name="site_name" content="Roelofs Coaching">
 <meta name="rights" content="www.roelofs-coaching.nl">
 <meta name="viewport" content="width=device-width">
 <meta name="theme-color" content="#444444">
-<meta property="og:title" content="Roelofs Coaching - <?php echo $filename; ?>">
+<meta property="og:title" content="Roelofs Coaching - <?php echo $pretty_file_name; ?>">
 <meta property="og:type" content="video">
 <meta property="og:video" content="<?php echo $full_link; ?>">
 <meta property="og:video:url" content="<?php echo $current_url; ?>">
@@ -72,9 +61,9 @@ $file_time = date(DATE_ATOM, filemtime('../' . $file));
 <meta property="og:image:width" content="<?php echo $width; ?>">
 <meta property="og:image:height" content="<?php echo $height; ?>">
 <?php endif ?>
-<meta property="og:description" content="<?php echo $filename; ?> is made and hosted by Roelofs Coaching">
+<meta property="og:description" content="<?php echo $pretty_file_name; ?> is made and hosted by Roelofs Coaching">
 <meta property="og:url" content="<?php echo $current_url; ?>">
-<title>Roelofs Coaching - <?php echo $filename; ?></title>
+<title>Roelofs Coaching - <?php echo $pretty_file_name; ?></title>
 <link href="<?php echo $current_url; ?>" rel="canonical">
 <link href="<?php echo dirname($_SERVER['PHP_SELF'], 2); ?>/templates/purity_iii/favicon.ico" rel="shortcut icon" type="image/x-icon">
 <link href="<?php echo dirname($_SERVER['PHP_SELF']) . CSS; ?>" rel="stylesheet">
@@ -192,7 +181,7 @@ const player = videojs('my-player', {
     }
 });
 
-<?php  if (isset($height, $width) && str_contains($_SERVER['HTTP_REFERER'], $_SERVER['SERVER_NAME'])): ?>
+<?php  if (isset($height, $width) && str_contains($_SERVER['HTTP_REFERER'] ?? '', $_SERVER['SERVER_NAME'])): ?>
 
     const isIframe = (() => {
         try {
