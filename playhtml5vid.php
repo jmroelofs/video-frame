@@ -25,7 +25,7 @@ if (! $mime_type || ! str_contains($mime_type, 'video')) {
 ['extension' => $extension, 'filename' => $filename] = pathinfo($file);
 
 // some household variables
-$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https://':'http://';
+$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
 $current_url = explode('?', $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'])[0];
 
 $full_link = $protocol . $_SERVER['SERVER_NAME'] . implode('/', array_map('rawurlencode', explode('/', dirname($_SERVER['PHP_SELF'], 2) . '/' . $file)));
