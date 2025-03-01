@@ -19,10 +19,10 @@ $extensions_and_mime_types = array(
 header("Access-Control-Allow-Origin: *");
 
 // get file name
-$file = rawurldecode($_GET['file']);
+$file = rawurldecode($_GET['file'] ?? '');
 
 // get autoplay, default is 1
-$autoplay = ( $_GET['autoplay'] !== '0' );
+$autoplay = ($_GET['autoplay'] ?? null !== '0');
 
 $ext = pathinfo($file, PATHINFO_EXTENSION);
 
