@@ -31,7 +31,7 @@ $videoLink = $protocol
     . implode('/', array_map('rawurlencode', explode('/', dirname($_SERVER['SCRIPT_NAME'], 2) . ltrim($file, '..'))));
 
 $image = rtrim($file, ".$extension") . '.jpg';
-if (file_exists($image)){
+if (is_file($image)){
     [$width, $height] = getimagesize($image);
 }
 $imageLink = rtrim($videoLink, ".$extension") . '.jpg';
