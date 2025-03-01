@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-const _JEXEC = 1 ;
+const _JEXEC = 1;
 
 const SCRIPT = '/node_modules/video.js/dist/video.min.js';
 const CSS = '/node_modules/video.js/dist/video-js.min.css';
