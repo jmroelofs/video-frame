@@ -16,14 +16,7 @@ $file = '../' . rawurldecode($_GET['file'] ?? '');
 $autoplay = ($_GET['autoplay'] ?? null !== '0');
 
 // for security
-if (! is_file($file)) {
-    require __DIR__ . '/../index.php';
-    exit();
-}
-
-$mime_type = mime_content_type($file);
-
-if (! str_contains($mime_type, 'video')) {
+if (! is_file($file) || ! ($mime_type = mime_content_type($file)) || ! str_contains($mime_type, 'video')) {
     require __DIR__ . '/../index.php';
     exit();
 }
