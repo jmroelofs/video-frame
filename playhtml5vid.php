@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 const _JEXEC = 1 ;
 
-const SCRIPT = 'video-frame/node_modules/video.js/dist/video.min.js';
-const CSS = 'video-frame/node_modules/video.js/dist/video-js.min.css';
+const SCRIPT = '/node_modules/video.js/dist/video.min.js';
+const CSS = '/node_modules/video.js/dist/video-js.min.css';
 
 header("Access-Control-Allow-Origin: *");
 
@@ -29,7 +29,6 @@ if (! str_contains($mime_type, 'video')) {
 }
 
 [
-
     'extension' => $extension,
     'filename' => $filename,
 ] = pathinfo($file) + [
@@ -41,8 +40,7 @@ if (! str_contains($mime_type, 'video')) {
 $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https://':'http://';
 $current_url = explode('?', $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'])[0];
 
-$parent_directory = rtrim(dirname($_SERVER['PHP_SELF']), 'video-frame');
-$full_link = $protocol . $_SERVER['SERVER_NAME'] . implode('/', array_map('rawurlencode', explode('/', $parent_directory . $file)));
+$full_link = $protocol . $_SERVER['SERVER_NAME'] . implode('/', array_map('rawurlencode', explode('/', dirname($_SERVER['PHP_SELF'], 2) . '/' . $file)));
 $full_image_link = rtrim($full_link, ".$extension") . '.jpg';
 $image = rtrim('../' . $file, ".$extension") . '.jpg';
 if (file_exists($image)){
@@ -78,9 +76,9 @@ $file_time = date(DATE_ATOM, filemtime('../' . $file));
 <meta property="og:url" content="<?php echo $current_url; ?>">
 <title>Roelofs Coaching - <?php echo $filename; ?></title>
 <link href="<?php echo $current_url; ?>" rel="canonical">
-<link href="<?php echo $parent_directory; ?>templates/purity_iii/favicon.ico" rel="shortcut icon" type="image/x-icon">
-<link href="<?php echo $parent_directory . CSS; ?>" rel="stylesheet">
-<script src="<?php echo $parent_directory . SCRIPT; ?>"></script>
+<link href="<?php echo dirname($_SERVER['PHP_SELF'], 2); ?>/templates/purity_iii/favicon.ico" rel="shortcut icon" type="image/x-icon">
+<link href="<?php echo dirname($_SERVER['PHP_SELF']) . CSS; ?>" rel="stylesheet">
+<script src="<?php echo dirname($_SERVER['PHP_SELF']) . SCRIPT; ?>"></script>
 <style>
     @-ms-viewport     {width: device-width;}
     @-o-viewport      {width: device-width;}
