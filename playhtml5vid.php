@@ -10,18 +10,18 @@ const CSS = '/node_modules/video.js/dist/video-js.min.css';
 header("Access-Control-Allow-Origin: *");
 
 // get file name
-$file = rawurldecode($_GET['file'] ?? '');
+$file = '../' . rawurldecode($_GET['file'] ?? '');
 
 // get autoplay, default is 1
 $autoplay = ($_GET['autoplay'] ?? null !== '0');
 
 // for security
-if (! file_exists('../' . $file)) {
+if (! is_file($file)) {
     require __DIR__ . '/../index.php';
     exit();
 }
 
-$mime_type = mime_content_type('../' . $file);
+$mime_type = mime_content_type($file);
 
 if (! str_contains($mime_type, 'video')) {
     require __DIR__ . '/../index.php';
@@ -31,16 +31,16 @@ if (! str_contains($mime_type, 'video')) {
 ['extension' => $extension, 'filename' => $filename] = pathinfo($file);
 
 // some household variables
-$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
+$protocol = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
 $current_url = explode('?', $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'])[0];
 
-$full_link = $protocol . $_SERVER['SERVER_NAME'] . implode('/', array_map('rawurlencode', explode('/', dirname($_SERVER['PHP_SELF'], 2) . '/' . $file)));
+$full_link = $protocol . $_SERVER['SERVER_NAME'] . implode('/', array_map('rawurlencode', explode('/', dirname($_SERVER['SCRIPT_NAME'], 2) . ltrim($file, '..'))));
 $full_image_link = rtrim($full_link, ".$extension") . '.jpg';
-$image = rtrim('../' . $file, ".$extension") . '.jpg';
+$image = rtrim($file, ".$extension") . '.jpg';
 if (file_exists($image)){
     [$width, $height] = getimagesize($image);
 }
-$file_time = date(DATE_ATOM, filemtime('../' . $file));
+$file_time = date(DATE_ATOM, filemtime($file));
 
 ?>
 <!DOCTYPE html>
@@ -70,9 +70,9 @@ $file_time = date(DATE_ATOM, filemtime('../' . $file));
 <meta property="og:url" content="<?php echo $current_url; ?>">
 <title>Roelofs Coaching - <?php echo $filename; ?></title>
 <link href="<?php echo $current_url; ?>" rel="canonical">
-<link href="<?php echo dirname($_SERVER['PHP_SELF'], 2); ?>/templates/purity_iii/favicon.ico" rel="shortcut icon" type="image/x-icon">
-<link href="<?php echo dirname($_SERVER['PHP_SELF']) . CSS; ?>" rel="stylesheet">
-<script src="<?php echo dirname($_SERVER['PHP_SELF']) . SCRIPT; ?>"></script>
+<link href="<?php echo dirname($_SERVER['SCRIPT_NAME'], 2); ?>/templates/purity_iii/favicon.ico" rel="shortcut icon" type="image/x-icon">
+<link href="<?php echo dirname($_SERVER['SCRIPT_NAME']) . CSS; ?>" rel="stylesheet">
+<script src="<?php echo dirname($_SERVER['SCRIPT_NAME']) . SCRIPT; ?>"></script>
 <style>
     @-ms-viewport     {width: device-width;}
     @-o-viewport      {width: device-width;}
