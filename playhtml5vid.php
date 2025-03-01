@@ -2,21 +2,12 @@
 
 declare(strict_types = 1);
 
-define( '_JEXEC', 1 );
+const _JEXEC = 1 ;
 
-define('SCRIPT', 'video-frame/node_modules/video.js/dist/video.min.js');
-define('CSS', 'video-frame/node_modules/video.js/dist/video-js.min.css');
+const SCRIPT = 'video-frame/node_modules/video.js/dist/video.min.js';
+const CSS = 'video-frame/node_modules/video.js/dist/video-js.min.css';
 
 header("Access-Control-Allow-Origin: *");
-
-$extensions_and_mime_types = array(
-    'mp4'  => 'video/mp4',
-    'm4v'  => 'video/mp4',
-    'f4v'  => 'video/mp4',
-    'mov'  => 'video/quicktime',
-    'webm' => 'video/webm',
-    'ogv'  => 'video/ogg'
-);
 
 // get file name
 $file = rawurldecode($_GET['file'] ?? '');
@@ -24,36 +15,37 @@ $file = rawurldecode($_GET['file'] ?? '');
 // get autoplay, default is 1
 $autoplay = ($_GET['autoplay'] ?? null !== '0');
 
+// for security
+if (! file_exists('../' . $file)) {
+    require __DIR__ . '/../index.php';
+    exit();
+}
+
+$mime_type = mime_content_type('../' . $file);
+
+if (! str_contains($mime_type, 'video')) {
+    require __DIR__ . '/../index.php';
+    exit();
+}
+
 [
     'dirname' => $dirname,
     'basename' => $basename,
     'extension' => $extension,
     'filename' => $filename,
-     ] = pathinfo($file) + [
+] = pathinfo($file) + [
     'dirname' => '',
     'basename' =>'',
     'extension' => '',
     'filename' => '',
 ];
 
-// for security
-if (! $extensions_and_mime_types[$extension] || ! file_exists('../' . $file)) {
-    require __DIR__ . '/../index.php';
-    exit();
-}
-
 // some household variables
 $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https://':'http://';
-$current_url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
-// to remove trailing stuff
-if (strrpos($current_url,'?') !== false) {
-    $current_url = substr($current_url, 0, strrpos($current_url, '?'));
-}
+$current_url = explode('?', $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'])[0];
 
 $parent_directory = rtrim(dirname($_SERVER['PHP_SELF']), 'video-frame');
-$our_server = $protocol . $_SERVER['SERVER_NAME'];
-$full_link = $our_server . implode('/', array_map('rawurlencode', explode('/', $parent_directory . $file)));
+$full_link = $protocol . $_SERVER['SERVER_NAME'] . implode('/', array_map('rawurlencode', explode('/', $parent_directory . $file)));
 $full_image_link = rtrim($full_link, ".$extension") . '.jpg';
 $image = rtrim('../' . $file, ".$extension") . '.jpg';
 if (file_exists($image)){
@@ -76,7 +68,7 @@ $file_time = date(DATE_ATOM, filemtime('../' . $file));
 <meta property="og:type" content="video">
 <meta property="og:video" content="<?php echo $full_link; ?>">
 <meta property="og:video:url" content="<?php echo $current_url; ?>">
-<meta property="og:video:type" content="<?php echo $extensions_and_mime_types[$extension]; ?>">
+<meta property="og:video:type" content="<?php echo $mime_type; ?>">
 <?php if (isset($height) && isset($width)): ?>
 <meta property="og:video:width" content="<?php echo $width; ?>">
 <meta property="og:video:height" content="<?php echo $height; ?>">
@@ -156,7 +148,7 @@ $file_time = date(DATE_ATOM, filemtime('../' . $file));
         preload="auto"
         poster="<?php echo $full_image_link; ?>"
     >
-        <source src="<?php echo $full_link; ?>" type="<?php $extensions_and_mime_types[$extension]; ?>">
+        <source src="<?php echo $full_link; ?>" type="<?php $mime_type; ?>">
         <p class="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading to a
             web browser that
