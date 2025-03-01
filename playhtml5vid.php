@@ -29,13 +29,10 @@ if (! str_contains($mime_type, 'video')) {
 }
 
 [
-    'dirname' => $dirname,
-    'basename' => $basename,
+
     'extension' => $extension,
     'filename' => $filename,
 ] = pathinfo($file) + [
-    'dirname' => '',
-    'basename' =>'',
     'extension' => '',
     'filename' => '',
 ];
