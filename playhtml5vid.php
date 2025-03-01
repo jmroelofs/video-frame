@@ -34,7 +34,6 @@ $image = rtrim('../' . $file, ".$extension") . '.jpg';
 if (file_exists($image)){
     [$width, $height] = getimagesize($image);
 }
-$pretty_file_name = rawurldecode($filename);
 $file_time = date(DATE_ATOM, filemtime('../' . $file));
 
 ?>
@@ -43,12 +42,12 @@ $file_time = date(DATE_ATOM, filemtime('../' . $file));
 <head prefix="og: http://ogp.me/ns#"><?php /* see: http://ogp.me/ */ ?>
 <meta charset="UTF-8">
 <meta name="keywords" content="video">
-<meta name="description" content="<?php echo $pretty_file_name; ?> is made and hosted by Roelofs Coaching">
+<meta name="description" content="<?php echo $filename; ?> is made and hosted by Roelofs Coaching">
 <meta name="site_name" content="Roelofs Coaching">
 <meta name="rights" content="www.roelofs-coaching.nl">
 <meta name="viewport" content="width=device-width">
 <meta name="theme-color" content="#444444">
-<meta property="og:title" content="Roelofs Coaching - <?php echo $pretty_file_name; ?>">
+<meta property="og:title" content="Roelofs Coaching - <?php echo $filename; ?>">
 <meta property="og:type" content="video">
 <meta property="og:video" content="<?php echo $full_link; ?>">
 <meta property="og:video:url" content="<?php echo $current_url; ?>">
@@ -61,9 +60,9 @@ $file_time = date(DATE_ATOM, filemtime('../' . $file));
 <meta property="og:image:width" content="<?php echo $width; ?>">
 <meta property="og:image:height" content="<?php echo $height; ?>">
 <?php endif ?>
-<meta property="og:description" content="<?php echo $pretty_file_name; ?> is made and hosted by Roelofs Coaching">
+<meta property="og:description" content="<?php echo $filename; ?> is made and hosted by Roelofs Coaching">
 <meta property="og:url" content="<?php echo $current_url; ?>">
-<title>Roelofs Coaching - <?php echo $pretty_file_name; ?></title>
+<title>Roelofs Coaching - <?php echo $filename; ?></title>
 <link href="<?php echo $current_url; ?>" rel="canonical">
 <link href="<?php echo dirname($_SERVER['PHP_SELF'], 2); ?>/templates/purity_iii/favicon.ico" rel="shortcut icon" type="image/x-icon">
 <link href="<?php echo dirname($_SERVER['PHP_SELF']) . CSS; ?>" rel="stylesheet">
@@ -104,9 +103,9 @@ $file_time = date(DATE_ATOM, filemtime('../' . $file));
 {
     "@context": "http://schema.org/",
     "@type": "VideoObject",
-    "name": "<?php echo $pretty_file_name; ?>",
+    "name": "<?php echo $filename; ?>",
     "@id": "<?php echo $current_url ?>",
-    "description": "<?php echo $pretty_file_name; ?> is made and hosted by Roelofs Coaching",
+    "description": "<?php echo $filename; ?> is made and hosted by Roelofs Coaching",
     "contentURL": "<?php echo $full_link; ?>",
     "embedUrl": "<?php echo $current_url ?>",
 <?php if (isset($height) && isset($width)): ?>
