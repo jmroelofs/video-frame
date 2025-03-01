@@ -13,27 +13,30 @@ header("Access-Control-Allow-Origin: *");
 $file = '../' . rawurldecode($_GET['file'] ?? '');
 
 // get autoplay, default is 1
-$autoplay = ($_GET['autoplay'] ?? null !== '0');
+$autoPlay = ($_GET['autoplay'] ?? null !== '0');
 
 // for security
-if (! is_file($file) || ! ($mime_type = mime_content_type($file)) || ! str_contains($mime_type, 'video')) {
+if (! is_file($file) || ! ($mimeType = mime_content_type($file)) || ! str_contains($mimeType, 'video')) {
     require __DIR__ . '/../index.php';
     exit();
 }
 
-['extension' => $extension, 'filename' => $filename] = pathinfo($file);
+['extension' => $extension, 'filename' => $fileName] = pathinfo($file);
 
-// some household variables
 $protocol = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
-$current_url = explode('?', $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'])[0];
+$currentUrl = explode('?', $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'])[0];
 
-$full_link = $protocol . $_SERVER['SERVER_NAME'] . implode('/', array_map('rawurlencode', explode('/', dirname($_SERVER['SCRIPT_NAME'], 2) . ltrim($file, '..'))));
-$full_image_link = rtrim($full_link, ".$extension") . '.jpg';
+$videoLink = $protocol
+    . $_SERVER['SERVER_NAME']
+    . implode('/', array_map('rawurlencode', explode('/', dirname($_SERVER['SCRIPT_NAME'], 2) . ltrim($file, '..'))));
+
 $image = rtrim($file, ".$extension") . '.jpg';
 if (file_exists($image)){
     [$width, $height] = getimagesize($image);
 }
-$file_time = date(DATE_ATOM, filemtime($file));
+$imageLink = rtrim($videoLink, ".$extension") . '.jpg';
+
+$fileTime = date(DATE_ATOM, filemtime($file));
 
 ?>
 <!DOCTYPE html>
@@ -41,28 +44,28 @@ $file_time = date(DATE_ATOM, filemtime($file));
 <head prefix="og: http://ogp.me/ns#"><?php /* see: http://ogp.me/ */ ?>
 <meta charset="UTF-8">
 <meta name="keywords" content="video">
-<meta name="description" content="<?php echo $filename; ?> is made and hosted by Roelofs Coaching">
+<meta name="description" content="<?php echo $fileName; ?> is made and hosted by Roelofs Coaching">
 <meta name="site_name" content="Roelofs Coaching">
 <meta name="rights" content="www.roelofs-coaching.nl">
 <meta name="viewport" content="width=device-width">
 <meta name="theme-color" content="#444444">
-<meta property="og:title" content="Roelofs Coaching - <?php echo $filename; ?>">
+<meta property="og:title" content="Roelofs Coaching - <?php echo $fileName; ?>">
 <meta property="og:type" content="video">
-<meta property="og:video" content="<?php echo $full_link; ?>">
-<meta property="og:video:url" content="<?php echo $current_url; ?>">
-<meta property="og:video:type" content="<?php echo $mime_type; ?>">
+<meta property="og:video" content="<?php echo $videoLink; ?>">
+<meta property="og:video:url" content="<?php echo $currentUrl; ?>">
+<meta property="og:video:type" content="<?php echo $mimeType; ?>">
 <?php if (isset($height) && isset($width)): ?>
 <meta property="og:video:width" content="<?php echo $width; ?>">
 <meta property="og:video:height" content="<?php echo $height; ?>">
-<meta property="og:image" content="<?php echo $full_image_link; ?>">
+<meta property="og:image" content="<?php echo $imageLink; ?>">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="<?php echo $width; ?>">
 <meta property="og:image:height" content="<?php echo $height; ?>">
 <?php endif ?>
-<meta property="og:description" content="<?php echo $filename; ?> is made and hosted by Roelofs Coaching">
-<meta property="og:url" content="<?php echo $current_url; ?>">
-<title>Roelofs Coaching - <?php echo $filename; ?></title>
-<link href="<?php echo $current_url; ?>" rel="canonical">
+<meta property="og:description" content="<?php echo $fileName; ?> is made and hosted by Roelofs Coaching">
+<meta property="og:url" content="<?php echo $currentUrl; ?>">
+<title>Roelofs Coaching - <?php echo $fileName; ?></title>
+<link href="<?php echo $currentUrl; ?>" rel="canonical">
 <link href="<?php echo dirname($_SERVER['SCRIPT_NAME'], 2); ?>/templates/purity_iii/favicon.ico" rel="shortcut icon" type="image/x-icon">
 <link href="<?php echo dirname($_SERVER['SCRIPT_NAME']) . CSS; ?>" rel="stylesheet">
 <script src="<?php echo dirname($_SERVER['SCRIPT_NAME']) . SCRIPT; ?>"></script>
@@ -102,16 +105,16 @@ $file_time = date(DATE_ATOM, filemtime($file));
 {
     "@context": "http://schema.org/",
     "@type": "VideoObject",
-    "name": "<?php echo $filename; ?>",
-    "@id": "<?php echo $current_url ?>",
-    "description": "<?php echo $filename; ?> is made and hosted by Roelofs Coaching",
-    "contentURL": "<?php echo $full_link; ?>",
-    "embedUrl": "<?php echo $current_url ?>",
+    "name": "<?php echo $fileName; ?>",
+    "@id": "<?php echo $currentUrl ?>",
+    "description": "<?php echo $fileName; ?> is made and hosted by Roelofs Coaching",
+    "contentURL": "<?php echo $videoLink; ?>",
+    "embedUrl": "<?php echo $currentUrl ?>",
 <?php if (isset($height) && isset($width)): ?>
     "height": <?php echo $height; ?>,
     "width": <?php echo $width; ?>,
-    "thumbnailUrl": "<?php echo $full_image_link; ?>",
-    "uploadDate": "<?php echo $file_time; ?>",
+    "thumbnailUrl": "<?php echo $imageLink; ?>",
+    "uploadDate": "<?php echo $fileTime; ?>",
 <?php endif ?>
     "author": {
         "@type": "Person",
@@ -128,9 +131,9 @@ $file_time = date(DATE_ATOM, filemtime($file));
         class="video-js"
         controls
         preload="auto"
-        poster="<?php echo $full_image_link; ?>"
+        poster="<?php echo $imageLink; ?>"
     >
-        <source src="<?php echo $full_link; ?>" type="<?php $mime_type; ?>">
+        <source src="<?php echo $videoLink; ?>" type="<?php $mimeType; ?>">
         <p class="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading to a
             web browser that
