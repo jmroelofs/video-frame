@@ -7,6 +7,8 @@ define( '_JEXEC', 1 );
 define('SCRIPT', 'video-frame/node_modules/video.js/dist/video.min.js');
 define('CSS', 'video-frame/node_modules/video.js/dist/video-js.min.css');
 
+header("Access-Control-Allow-Origin: *");
+
 $extensions_and_mime_types = array(
     'mp4'  => 'video/mp4',
     'm4v'  => 'video/mp4',
@@ -16,25 +18,28 @@ $extensions_and_mime_types = array(
     'ogv'  => 'video/ogg'
 );
 
-header("Access-Control-Allow-Origin: *");
-
 // get file name
 $file = rawurldecode($_GET['file'] ?? '');
 
 // get autoplay, default is 1
 $autoplay = ($_GET['autoplay'] ?? null !== '0');
 
-$ext = pathinfo($file, PATHINFO_EXTENSION);
+[
+    'dirname' => $dirname,
+    'basename' => $basename,
+    'extension' => $extension,
+    'filename' => $filename,
+     ] = pathinfo($file) + [
+    'dirname' => '',
+    'basename' =>'',
+    'extension' => '',
+    'filename' => '',
+];
 
 // for security
-if (!$extensions_and_mime_types[$ext] || !file_exists('../' . $file)) {
+if (! $extensions_and_mime_types[$extension] || ! file_exists('../' . $file)) {
     require __DIR__ . '/../index.php';
     exit();
-}
-
-// helper function
-function remove_extension($filename) {
-    return substr($filename, 0, strrpos($filename, '.'));
 }
 
 // some household variables
@@ -45,13 +50,12 @@ $current_url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 if (strrpos($current_url,'?') !== false) {
     $current_url = substr($current_url, 0, strrpos($current_url, '?'));
 }
+
 $parent_directory = rtrim(dirname($_SERVER['PHP_SELF']), 'video-frame');
 $our_server = $protocol . $_SERVER['SERVER_NAME'];
-$short_link = implode('/', array_map('rawurlencode', explode('/', $parent_directory . $file)));
-$full_link = $our_server . $short_link;
-$pretty_file_name = basename($file, '.' . $ext);
-$full_image_link = remove_extension($full_link) . '.jpg';
-$image = remove_extension('../' . $file) . '.jpg';
+$full_link = $our_server . implode('/', array_map('rawurlencode', explode('/', $parent_directory . $file)));
+$full_image_link = rtrim($full_link, ".$extension") . '.jpg';
+$image = rtrim('../' . $file, ".$extension") . '.jpg';
 if (file_exists($image)){
     [$width, $height, $image_type, $image_attr] = getimagesize($image);
 }
@@ -63,16 +67,16 @@ $file_time = date(DATE_ATOM, filemtime('../' . $file));
 <head prefix="og: http://ogp.me/ns#"><?php /* see: http://ogp.me/ */ ?>
 <meta charset="UTF-8">
 <meta name="keywords" content="video">
-<meta name="description" content="<?php echo $pretty_file_name; ?> is made and hosted by Roelofs Coaching">
+<meta name="description" content="<?php echo $filename; ?> is made and hosted by Roelofs Coaching">
 <meta name="site_name" content="Roelofs Coaching">
 <meta name="rights" content="www.roelofs-coaching.nl">
 <meta name="viewport" content="width=device-width">
 <meta name="theme-color" content="#444444">
-<meta property="og:title" content="Roelofs Coaching - <?php echo $pretty_file_name; ?>">
+<meta property="og:title" content="Roelofs Coaching - <?php echo $filename; ?>">
 <meta property="og:type" content="video">
 <meta property="og:video" content="<?php echo $full_link; ?>">
 <meta property="og:video:url" content="<?php echo $current_url; ?>">
-<meta property="og:video:type" content="<?php echo $extensions_and_mime_types[$ext]; ?>">
+<meta property="og:video:type" content="<?php echo $extensions_and_mime_types[$extension]; ?>">
 <?php if (isset($height) && isset($width)): ?>
 <meta property="og:video:width" content="<?php echo $width; ?>">
 <meta property="og:video:height" content="<?php echo $height; ?>">
@@ -81,9 +85,9 @@ $file_time = date(DATE_ATOM, filemtime('../' . $file));
 <meta property="og:image:width" content="<?php echo $width; ?>">
 <meta property="og:image:height" content="<?php echo $height; ?>">
 <?php endif ?>
-<meta property="og:description" content="<?php echo $pretty_file_name; ?> is made and hosted by Roelofs Coaching">
+<meta property="og:description" content="<?php echo $filename; ?> is made and hosted by Roelofs Coaching">
 <meta property="og:url" content="<?php echo $current_url; ?>">
-<title>Roelofs Coaching - <?php echo $pretty_file_name; ?></title>
+<title>Roelofs Coaching - <?php echo $filename; ?></title>
 <link href="<?php echo $current_url; ?>" rel="canonical">
 <link href="<?php echo $parent_directory; ?>templates/purity_iii/favicon.ico" rel="shortcut icon" type="image/x-icon">
 <link href="<?php echo $parent_directory . CSS; ?>" rel="stylesheet">
@@ -152,7 +156,7 @@ $file_time = date(DATE_ATOM, filemtime('../' . $file));
         preload="auto"
         poster="<?php echo $full_image_link; ?>"
     >
-        <source src="<?php echo $full_link; ?>" type="<?php $extensions_and_mime_types[$ext]; ?>">
+        <source src="<?php echo $full_link; ?>" type="<?php $extensions_and_mime_types[$extension]; ?>">
         <p class="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading to a
             web browser that
