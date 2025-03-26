@@ -16,7 +16,11 @@ $file = '../' . rawurldecode($_GET['file'] ?? '');
 $autoPlay = ($_GET['autoplay'] ?? null !== '0');
 
 // for security
-if (! is_file($file) || ! ($mimeType = mime_content_type($file)) || ! str_contains($mimeType, 'video')) {
+if (
+    ! is_file($file)
+    || ! ($mimeType = mime_content_type($file))
+    || ! str_contains($mimeType, 'video')
+) {
     require __DIR__ . '/../index.php';
     exit();
 }
@@ -27,9 +31,15 @@ $protocol = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
 $currentUrl = explode('?', $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'])[0];
 
 $videoLink = $protocol
-    . $_SERVER['SERVER_NAME']
-    . '/'
-    . implode('/', array_map('rawurlencode', array_filter(explode('/', dirname($_SERVER['SCRIPT_NAME'], 2) . ltrim($file, '..')))));
+    . implode(
+        '/',
+        [$_SERVER['SERVER_NAME']] + array_map(
+            'rawurlencode',
+             array_filter(
+                explode(
+                    '/',
+                    dirname($_SERVER['SCRIPT_NAME'], 2) . ltrim($file, '..')
+    ))));
 
 $image = rtrim($file, ".$extension") . '.jpg';
 if (is_file($image)){
