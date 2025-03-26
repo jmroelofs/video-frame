@@ -109,7 +109,7 @@ $fileTime = date(DATE_ATOM, filemtime($file));
     "name": "<?php echo $fileName; ?>",
     "@id": "<?php echo $currentUrl ?>",
     "description": "<?php echo $fileName; ?> is made and hosted by Roelofs Coaching",
-    "contentURL": "<?php echo $videoLink; ?>",
+    "contentURL": "<?php echo $currentUrl; ?>",
     "embedUrl": "<?php echo $currentUrl ?>",
 <?php if (isset($height) && isset($width)): ?>
     "height": <?php echo $height; ?>,
