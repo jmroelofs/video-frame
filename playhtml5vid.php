@@ -28,7 +28,8 @@ $currentUrl = explode('?', $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST
 
 $videoLink = $protocol
     . $_SERVER['SERVER_NAME']
-    . implode('/', array_map('rawurlencode', explode('/', dirname($_SERVER['SCRIPT_NAME'], 2) . ltrim($file, '..'))));
+    . '/'
+    . implode('/', array_map('rawurlencode', array_filter(explode('/', dirname($_SERVER['SCRIPT_NAME'], 2) . ltrim($file, '..')))));
 
 $image = rtrim($file, ".$extension") . '.jpg';
 if (is_file($image)){
@@ -133,7 +134,7 @@ $fileTime = date(DATE_ATOM, filemtime($file));
         preload="auto"
         poster="<?php echo $imageLink; ?>"
     >
-        <source src="<?php echo $videoLink; ?>" type="<?php $mimeType; ?>">
+        <source src="<?php echo $videoLink; ?>" type="<?php echo $mimeType; ?>">
         <p class="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading to a
             web browser that
