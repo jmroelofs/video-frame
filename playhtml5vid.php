@@ -41,11 +41,11 @@ $videoLink = $protocol
                     dirname($_SERVER['SCRIPT_NAME'], 2) . ltrim($file, '..')
     ))));
 
-$image = rtrim($file, ".$extension") . '.jpg';
+$image = substr($file, 0, -strlen($extension)) . 'jpg';
 if (is_file($image)){
     [$width, $height] = getimagesize($image);
 }
-$imageLink = rtrim($videoLink, ".$extension") . '.jpg';
+$imageLink = substr($videoLink, 0, -strlen($extension)) . 'jpg';
 
 $fileTime = date(DATE_ATOM, filemtime($file));
 
