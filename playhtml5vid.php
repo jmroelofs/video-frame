@@ -77,7 +77,7 @@ $fileTime = date(DATE_ATOM, filemtime($file));
 <meta property="og:url" content="<?php echo $currentUrl; ?>">
 <title>Roelofs Coaching - <?php echo $fileName; ?></title>
 <link href="<?php echo $currentUrl; ?>" rel="canonical">
-<link href="<?php echo dirname($_SERVER['SCRIPT_NAME'], 2); ?>/templates/purity_iii/favicon.ico" rel="shortcut icon" type="image/x-icon">
+<link href="<?php echo dirname($_SERVER['SCRIPT_NAME'], 2); ?>templates/purity_iii/favicon.ico" rel="shortcut icon" type="image/x-icon">
 <link href="<?php echo dirname($_SERVER['SCRIPT_NAME']) . CSS; ?>" rel="stylesheet">
 <script src="<?php echo dirname($_SERVER['SCRIPT_NAME']) . SCRIPT; ?>"></script>
 <style>
