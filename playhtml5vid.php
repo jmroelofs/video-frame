@@ -47,6 +47,8 @@ if (is_file($image)){
 }
 $imageLink = substr($videoLink, 0, -strlen($extension)) . 'jpg';
 
+$fpsInfo = file_get_contents(substr($file, 0, -strlen($extension)) . 'framerate.txt');
+
 $fileTime = date(DATE_ATOM, filemtime($file));
 
 ?>
@@ -80,6 +82,8 @@ $fileTime = date(DATE_ATOM, filemtime($file));
 <link href="<?php echo dirname($_SERVER['SCRIPT_NAME'], 2); ?>templates/purity_iii/favicon.ico" rel="shortcut icon" type="image/x-icon">
 <link href="<?php echo dirname($_SERVER['SCRIPT_NAME']) . CSS; ?>" rel="stylesheet">
 <script src="<?php echo dirname($_SERVER['SCRIPT_NAME']) . SCRIPT; ?>"></script>
+<script src="<?php echo dirname($_SERVER['SCRIPT_NAME']) ?>/js/videojs.framebyframe.js"></script>
+<link rel="stylesheet" href="<?php echo dirname($_SERVER['SCRIPT_NAME']) ?>/css/videojs.framebyframe.css">
 <style>
     @-ms-viewport     {width: device-width;}
     @-o-viewport      {width: device-width;}
@@ -168,6 +172,17 @@ const player = videojs('my-player', {
             forward: 5
         }
     },
+<?php if ($fpsInfo !== false): ?>
+	plugins: {
+		framebyframe: {
+			fps: <?php echo trim($fpsInfo); ?>,
+			steps: [
+				{ text: '< 1f', step: -1 },
+				{ text: '1f >', step: 1 }
+			]
+		}
+	},
+<?php endif; ?>
     userActions: {
         hotkeys: function(event) {
             if (event.which === 32) { // space
