@@ -4,9 +4,6 @@ declare(strict_types = 1);
 
 const _JEXEC = 1;
 
-const SCRIPT = '/node_modules/video.js/dist/video.min.js';
-const CSS = '/node_modules/video.js/dist/video-js.min.css';
-
 header("Access-Control-Allow-Origin: *");
 
 // get file name
@@ -80,9 +77,9 @@ $fileTime = date(DATE_ATOM, filemtime($file));
 <title>Roelofs Coaching - <?php echo $fileName; ?></title>
 <link href="<?php echo $currentUrl; ?>" rel="canonical">
 <link href="<?php echo dirname($_SERVER['SCRIPT_NAME'], 2); ?>templates/purity_iii/favicon.ico" rel="shortcut icon" type="image/x-icon">
-<link href="<?php echo dirname($_SERVER['SCRIPT_NAME']) . CSS; ?>" rel="stylesheet">
-<script src="<?php echo dirname($_SERVER['SCRIPT_NAME']) . SCRIPT; ?>"></script>
-<script src="<?php echo dirname($_SERVER['SCRIPT_NAME']) ?>/js/videojs.framebyframe.js"></script>
+<link href="<?php echo dirname($_SERVER['SCRIPT_NAME']); ?>/css/video-js.min.css" rel="stylesheet">
+<script src="<?php echo dirname($_SERVER['SCRIPT_NAME']); ?>/js/video.min.js"></script>
+<script src="<?php echo dirname($_SERVER['SCRIPT_NAME']); ?>/js/videojs.framebyframe.js"></script>
 <link rel="stylesheet" href="<?php echo dirname($_SERVER['SCRIPT_NAME']) ?>/css/videojs.framebyframe.css">
 <style>
     @-ms-viewport     {width: device-width;}
@@ -209,27 +206,25 @@ const player = videojs('my-player', {
 });
 
 <?php  if (isset($height, $width) && str_contains($_SERVER['HTTP_REFERER'] ?? '', $_SERVER['SERVER_NAME'])): ?>
-
-    const isIframe = (() => {
-        try {
-            return window.self !== window.top;
-        } catch(e) {
-            return true;
-        }
-    })();
-
-    if (isIframe) {
-        const jQuery = window.parent.jQuery;
-        jQuery('#mediabox-iframe-fix').remove();
-        jQuery(`<style id="mediabox-iframe-fix">
-            .wf-mediabox-content-item {
-                padding-bottom: <?php echo round(100 * $height / $width, 6); ?>% !important;
-                height: 0 !important;
-            }
-        </style>`)
-        .appendTo('body');
+const isIframe = (() => {
+    try {
+        return window.self !== window.top;
+    } catch(e) {
+        return true;
     }
+})();
 
+if (isIframe) {
+    const jQuery = window.parent.jQuery;
+    jQuery('#mediabox-iframe-fix').remove();
+    jQuery(`<style id="mediabox-iframe-fix">
+        .wf-mediabox-content-item {
+            padding-bottom: <?php echo round(100 * $height / $width, 6); ?>% !important;
+            height: 0 !important;
+        }
+    </style>`)
+    .appendTo('body');
+}
 <?php endif ?>
 
 </script>
