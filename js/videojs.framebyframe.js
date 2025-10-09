@@ -17,18 +17,17 @@ class FrameByFrameButton extends Button {
     // Start by pausing the player
     this.player.pause();
     // Calculate movement distance
-    var dist = this.frameTime * this.step_size;
+    const dist = this.frameTime * this.step_size;
     this.player.currentTime(this.player.currentTime() + dist);
   }
 }
 
 function framebyframe(options) {
-    var player = this,
-        frameTime = 1 / 30; // assume 30 fps
+    const player = this;
 
     player.ready(function() {
         options.steps.forEach(function(opt) {
-            var b = player.controlBar.addChild(
+            const b = player.controlBar.addChild(
                 new FrameByFrameButton(player, {
                     el: videojs.dom.createEl(
                         'button',
@@ -46,6 +45,21 @@ function framebyframe(options) {
             {}, opt.index);
             player.controlBar.el().insertBefore(b.el(), player.controlBar.fullscreenToggle.el());
         });
+
+        // Add mouse wheel support
+        player.el_.addEventListener(
+            "wheel",
+            (event) => {
+                const delta = event.deltaY;
+                if (delta === 0) return;
+
+                event.preventDefault();
+                // Start by pausing the player
+                player.pause();
+                player.currentTime(player.currentTime() + Math.sign(delta) / options.fps);
+            },
+            { passive: false }
+        );
     });
 }
 
