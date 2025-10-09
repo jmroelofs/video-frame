@@ -1,7 +1,7 @@
 // videojs-framebyframe-plugin
 //
 // copied from https://github.com/douglassllc/videojs-framebyframe
-// adjusted itś button placement which was giving an error
+// adjusted it's button placement which was giving an error
 
 const Button = videojs.getComponent('Button');
 
