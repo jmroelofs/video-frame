@@ -176,7 +176,8 @@ const player = videojs('my-player', {
 			steps: [
 				{ text: '< 1f', step: -1 },
 				{ text: '1f >', step: 1 }
-			]
+			],
+            wheel: { step: 1 }
 		}
 	},
 <?php endif; ?>

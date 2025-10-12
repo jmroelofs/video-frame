@@ -3,6 +3,8 @@
 // copied from https://github.com/douglassllc/videojs-framebyframe
 // adjusted it's button placement which was giving an error
 
+"use strict";
+
 const Button = videojs.getComponent('Button');
 
 class FrameByFrameButton extends Button {
@@ -47,19 +49,21 @@ function framebyframe(options) {
         });
 
         // Add mouse wheel support
-        player.el_.addEventListener(
-            "wheel",
-            (event) => {
-                const delta = event.deltaY;
-                if (delta === 0) return;
+        if(options.wheel){
+            player.el().addEventListener(
+                "wheel",
+                (event) => {
+                    const delta = event.deltaY;
+                    if (delta === 0) return;
 
-                event.preventDefault();
-                // Start by pausing the player
-                player.pause();
-                player.currentTime(player.currentTime() + Math.sign(delta) / options.fps);
-            },
-            { passive: false }
-        );
+                    event.preventDefault();
+                    // Start by pausing the player
+                    player.pause();
+                    player.currentTime(player.currentTime() + Math.sign(delta) * options.wheel.step / options.fps);
+                },
+                { passive: false }
+            );
+        }
     });
 }
 
