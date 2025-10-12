@@ -25,7 +25,8 @@ class FrameByFrameButton extends Button {
 }
 
 function framebyframe(options) {
-    const player = this;
+    const player = this,
+          fps = options.fps ?? 30000/1001;
 
     player.ready(function() {
         options.steps.forEach(function(opt) {
@@ -42,7 +43,7 @@ function framebyframe(options) {
                         }
                     ),
                     value: opt.step,
-                    fps: options.fps,
+                    fps: fps,
                 }),
             {}, opt.index);
             player.controlBar.el().insertBefore(b.el(), player.controlBar.fullscreenToggle.el());
@@ -59,7 +60,7 @@ function framebyframe(options) {
                     event.preventDefault();
                     // Start by pausing the player
                     player.pause();
-                    player.currentTime(player.currentTime() + Math.sign(delta) * options.wheel.step / options.fps);
+                    player.currentTime(player.currentTime() + Math.sign(delta) * options.wheel.step / fps);
                 },
                 { passive: false }
             );
