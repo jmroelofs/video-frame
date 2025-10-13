@@ -207,15 +207,7 @@ const player = videojs('my-player', {
 });
 
 <?php  if (isset($height, $width) && str_contains($_SERVER['HTTP_REFERER'] ?? '', $_SERVER['SERVER_NAME'])): ?>
-const isIframe = (() => {
-    try {
-        return window.self !== window.top;
-    } catch(e) {
-        return true;
-    }
-})();
-
-if (isIframe) {
+if (window.self !== window.top) {
     const jQuery = window.parent.jQuery;
     jQuery('#mediabox-iframe-fix').remove();
     jQuery(`<style id="mediabox-iframe-fix">
