@@ -17,20 +17,19 @@ class FrameByFrameButton extends videojs.getComponent('Button') {
         if (!this.player.paused()) {
             this.player.pause();
         }
-        this.player.currentTime(this.player.currentTime() + this.frameTime * this.step_size);
+        this.player.currentTime(
+            this.player.currentTime() + this.frameTime * this.step_size
+        );
     }
 }
 
 function framebyframe(options) {
-    const player = this,
-        fps = options.fps ?? 30000 / 1001;
-
-    player.ready(() => {
+    this.ready(() => {
         options.steps.forEach((opt) => {
-            const buttonElement = player.controlBar
+            const buttonElement = this.controlBar
                 .addChild(
                     new FrameByFrameButton(
-                        player,
+                        this,
                         {
                             el: videojs.dom.createEl(
                                 'button',
@@ -43,15 +42,15 @@ function framebyframe(options) {
                                 }
                             ),
                             value: opt.step,
-                            fps: fps,
+                            fps: options.fps ?? 30000 / 1001,
                         }
-                    ),
-                    {}
-                ).el();
-            player.controlBar.el()
+                    )
+                )
+                .el();
+            this.controlBar.el()
                 .insertBefore(
                     buttonElement,
-                    player.controlBar.fullscreenToggle.el()
+                    this.controlBar.fullscreenToggle.el()
                 );
         });
 
@@ -59,7 +58,7 @@ function framebyframe(options) {
         if (!options.wheel) {
             return;
         }
-        player.el()
+        this.el()
             .addEventListener(
                 "wheel",
                 (event) => {
@@ -68,10 +67,12 @@ function framebyframe(options) {
                     }
 
                     event.preventDefault();
-                    if (!player.paused()) {
-                        player.pause();
+                    if (!this.paused()) {
+                        this.pause();
                     }
-                    player.currentTime(player.currentTime() + Math.sign(event.deltaY) * options.wheel.step / fps);
+                    this.currentTime(
+                        this.currentTime() + Math.sign(event.deltaY) * (options.wheel.step ?? 1) / (options.fps ?? 30000 / 1001)
+                    );
                 },
                 { passive: false }
             );
