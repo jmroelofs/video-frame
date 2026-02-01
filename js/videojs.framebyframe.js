@@ -25,8 +25,8 @@ function framebyframe(options) {
     const player = this,
         fps = options.fps ?? 30000 / 1001;
 
-    player.ready(function () {
-        options.steps.forEach(function (opt) {
+    player.ready(() => {
+        options.steps.forEach((opt) => {
             const b = player.controlBar.addChild(
                 new FrameByFrameButton(
                     player,
@@ -43,8 +43,11 @@ function framebyframe(options) {
                         ),
                         value: opt.step,
                         fps: fps,
-                    }),
-                {}, opt.index);
+                    }
+                ),
+                {},
+                opt.index
+            );
             player.controlBar.el().insertBefore(b.el(), player.controlBar.fullscreenToggle.el());
         });
 
