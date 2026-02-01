@@ -10,7 +10,7 @@ class FrameByFrameButton extends videojs.getComponent('Button') {
         super(player, options);
         this.player = player;
         this.frameTime = 1 / options.fps;
-        this.step_size = options.value;
+        this.stepSize = options.step;
     }
 
     handleClick() {
@@ -18,7 +18,7 @@ class FrameByFrameButton extends videojs.getComponent('Button') {
             this.player.pause();
         }
         this.player.currentTime(
-            this.player.currentTime() + this.frameTime * this.step_size
+            this.player.currentTime() + this.frameTime * this.stepSize
         );
     }
 }
@@ -41,7 +41,7 @@ function framebyframe(options) {
                                     role: 'button'
                                 }
                             ),
-                            value: opt.step,
+                            step: opt.step,
                             fps: options.fps ?? 30000 / 1001,
                         }
                     )
@@ -80,5 +80,4 @@ function framebyframe(options) {
 }
 
 videojs.registerComponent('FrameByFrameButton', FrameByFrameButton);
-
 videojs.registerPlugin('framebyframe', framebyframe);
