@@ -26,56 +26,52 @@ class FrameByFrameButton extends videojs.getComponent('Button') {
 function framebyframe(options) {
     this.ready(() => {
         options.steps.forEach((opt) => {
-            const buttonElement = this.controlBar
-                .addChild(
-                    new FrameByFrameButton(
-                        this,
-                        {
-                            el: videojs.dom.createEl(
-                                'button',
-                                {
-                                    className: 'vjs-res-button vjs-control',
-                                    innerHTML: '<div class="vjs-control-content"><span class="vjs-fbf">' + opt.text + '</span></div>'
-                                },
-                                {
-                                    role: 'button'
-                                }
-                            ),
-                            step: opt.step,
-                            fps: options.fps ?? 30000 / 1001,
-                        }
-                    )
+            const buttonElement = this.controlBar.addChild(
+                new FrameByFrameButton(
+                    this,
+                    {
+                        el: videojs.dom.createEl(
+                            'button',
+                            {
+                                className: 'vjs-res-button vjs-control',
+                                innerHTML: '<div class="vjs-control-content"><span class="vjs-fbf">' + opt.text + '</span></div>'
+                            },
+                            {
+                                role: 'button'
+                            }
+                        ),
+                        step: opt.step,
+                        fps: options.fps ?? 30000 / 1001,
+                    }
                 )
-                .el();
-            this.controlBar.el()
-                .insertBefore(
-                    buttonElement,
-                    this.controlBar.fullscreenToggle.el()
-                );
+            ).el();
+            this.controlBar.el().insertBefore(
+                buttonElement,
+                this.controlBar.fullscreenToggle.el()
+            );
         });
 
         // Add mouse wheel support
         if (!options.wheel) {
             return;
         }
-        this.el()
-            .addEventListener(
-                "wheel",
-                (event) => {
-                    if (event.deltaY === 0) {
-                        return;
-                    }
+        this.el().addEventListener(
+            "wheel",
+            (event) => {
+                if (event.deltaY === 0) {
+                    return;
+                }
 
-                    event.preventDefault();
-                    if (!this.paused()) {
-                        this.pause();
-                    }
-                    this.currentTime(
-                        this.currentTime() + Math.sign(event.deltaY) * (options.wheel.step ?? 1) / (options.fps ?? 30000 / 1001)
-                    );
-                },
-                { passive: false }
-            );
+                event.preventDefault();
+                if (!this.paused()) {
+                    this.pause();
+                }
+                this.currentTime(
+                    this.currentTime() + Math.sign(event.deltaY) * (options.wheel.step ?? 1) / (options.fps ?? 30000 / 1001)
+                );
+            },
+            { passive: false }
+        );
     });
 }
 
