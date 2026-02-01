@@ -27,51 +27,54 @@ function framebyframe(options) {
 
     player.ready(() => {
         options.steps.forEach((opt) => {
-            const b = player.controlBar.addChild(
-                new FrameByFrameButton(
-                    player,
-                    {
-                        el: videojs.dom.createEl(
-                            'button',
-                            {
-                                className: 'vjs-res-button vjs-control',
-                                innerHTML: '<div class="vjs-control-content"><span class="vjs-fbf">' + opt.text + '</span></div>'
-                            },
-                            {
-                                role: 'button'
-                            }
-                        ),
-                        value: opt.step,
-                        fps: fps,
-                    }
-                ),
-                {},
-                opt.index
-            );
-            player.controlBar.el().insertBefore(b.el(), player.controlBar.fullscreenToggle.el());
+            const buttonElement = player.controlBar
+                .addChild(
+                    new FrameByFrameButton(
+                        player,
+                        {
+                            el: videojs.dom.createEl(
+                                'button',
+                                {
+                                    className: 'vjs-res-button vjs-control',
+                                    innerHTML: '<div class="vjs-control-content"><span class="vjs-fbf">' + opt.text + '</span></div>'
+                                },
+                                {
+                                    role: 'button'
+                                }
+                            ),
+                            value: opt.step,
+                            fps: fps,
+                        }
+                    ),
+                    {}
+                ).el();
+            player.controlBar.el()
+                .insertBefore(
+                    buttonElement,
+                    player.controlBar.fullscreenToggle.el()
+                );
         });
 
         // Add mouse wheel support
         if (!options.wheel) {
             return;
         }
-        player.el().addEventListener(
-            "wheel",
-            (event) => {
-                const delta = event.deltaY;
-                if (delta === 0) {
-                    return;
-                }
+        player.el()
+            .addEventListener(
+                "wheel",
+                (event) => {
+                    if (event.deltaY === 0) {
+                        return;
+                    }
 
-                event.preventDefault();
-                if (!player.paused()) {
-                    player.pause();
-                }
-                player.currentTime(player.currentTime() + Math.sign(delta) * options.wheel.step / fps);
-            },
-            { passive: false }
-        );
-
+                    event.preventDefault();
+                    if (!player.paused()) {
+                        player.pause();
+                    }
+                    player.currentTime(player.currentTime() + Math.sign(event.deltaY) * options.wheel.step / fps);
+                },
+                { passive: false }
+            );
     });
 }
 
