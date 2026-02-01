@@ -9,8 +9,7 @@ class FrameByFrameButton extends videojs.getComponent('Button') {
     constructor(player, options) {
         super(player, options);
         this.player = player;
-        this.frameTime = 1 / options.fps;
-        this.stepSize = options.step;
+        this.stepTime = options.stepTime;
     }
 
     handleClick() {
@@ -18,14 +17,14 @@ class FrameByFrameButton extends videojs.getComponent('Button') {
             this.player.pause();
         }
         this.player.currentTime(
-            this.player.currentTime() + this.frameTime * this.stepSize
+            this.player.currentTime() + this.stepTime
         );
     }
 }
 
 function framebyframe(options) {
     this.ready(() => {
-        options.steps.forEach((opt) => {
+        options.steps.forEach((option) => {
             const buttonElement = this.controlBar.addChild(
                 new FrameByFrameButton(
                     this,
@@ -34,14 +33,13 @@ function framebyframe(options) {
                             'button',
                             {
                                 className: 'vjs-res-button vjs-control',
-                                innerHTML: '<div class="vjs-control-content"><span class="vjs-fbf">' + opt.text + '</span></div>'
+                                innerHTML: '<div class="vjs-control-content"><span class="vjs-fbf">' + option.text + '</span></div>'
                             },
                             {
                                 role: 'button'
                             }
                         ),
-                        step: opt.step,
-                        fps: options.fps ?? 30000 / 1001,
+                        stepTime: option.step / (options.fps ?? 30000 / 1001)
                     }
                 )
             ).el();
