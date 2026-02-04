@@ -183,24 +183,22 @@ const player = videojs('my-player', {
 <?php endif; ?>
     userActions: {
         hotkeys: function(event) {
-            if (event.which === 32) { // space
-                if (this.paused()){
-                    this.play();
-                } else {
-                    this.pause();
-                };
-            }
-            else if (event.which === 37) { // arrow left
-                this.currentTime(this.currentTime() - 5);
-            }
-            else if (event.which === 39) { // arrow right
-                this.currentTime(this.currentTime() + 5);
-            }
-            else if (event.which === 38) { // arrow up
-                this.playbackRate(Math.min(this.playbackRate() * 2, 8));
-            }
-            else if (event.which === 40) { // arrow down
-                this.playbackRate(Math.max(this.playbackRate() / 2, 0.125));
+            switch(event.which) {
+                case 32: // space
+                    this.paused() ? this.play() : this.pause();
+                    break;
+                case 37: // arrow left
+                    this.currentTime(this.currentTime() - 5);
+                    break;
+                case 39: // arrow right
+                    this.currentTime(this.currentTime() + 5);
+                    break;
+                case 38: // arrow up
+                    this.playbackRate(Math.min(this.playbackRate() * 2, 8));
+                    break;
+                case 40: // arrow down
+                    this.playbackRate(Math.max(this.playbackRate() / 2, 0.125));
+                    break;
             }
         }
     }
