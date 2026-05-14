@@ -38,8 +38,8 @@ function frameByFrame(options) {
                         el: videojs.dom.createEl(
                             'button',
                             {
-                                className: 'vjs-res-button vjs-control',
-                                innerHTML: '<div class="vjs-control-content"><span class="vjs-fbf">' + option.text + '</span></div>'
+                                className: 'vjs-fbf-button vjs-control',
+                                innerHTML: `<span class="vjs-fbf">${option.text}</span>`
                             },
                             {
                                 role: 'button'

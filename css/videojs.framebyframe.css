@@ -1,7 +1,15 @@
-.vjs-fbf {
-  border: 1px solid white;
-  padding: 0px 3px 1px;
-  border-radius: 2px;
+.video-js {
+
+    .vjs-fbf {
+    border: 1px solid white;
+    padding: 0px 3px 1px;
+    border-radius: 2px;
+    }
+
+    .vjs-fbf-button {
+    cursor: pointer;
+    }
+
 }
 
 /* CSS Grid - Clip toolbar - mobile */
