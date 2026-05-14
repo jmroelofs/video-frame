@@ -5,20 +5,26 @@
 
 "use strict";
 
+const
+    defaultFps = 30000 / 1001,
+
+    doStep = (player, step, fps) => {
+        if (!player.paused()) {
+            player.pause();
+        }
+
+        player.currentTime(player.currentTime() + step / (fps ?? defaultFps));
+    }
+
 class FrameByFrameButton extends videojs.getComponent('Button') {
     constructor(player, options) {
         super(player, options);
         this.player = player;
-        this.stepTime = options.stepTime;
+        this.options = options;
     }
 
     handleClick() {
-        if (!this.player.paused()) {
-            this.player.pause();
-        }
-        this.player.currentTime(
-            this.player.currentTime() + this.stepTime
-        );
+        doStep(this.player, this.options.step, this.options.fps);
     }
 }
 
@@ -39,10 +45,12 @@ function framebyframe(options) {
                                 role: 'button'
                             }
                         ),
-                        stepTime: option.step / (options.fps ?? 30000 / 1001)
+                        step: option.step,
+                        fps: options.fps,
                     }
                 )
             ).el();
+
             this.controlBar.el().insertBefore(
                 buttonElement,
                 this.controlBar.fullscreenToggle.el()
@@ -53,20 +61,16 @@ function framebyframe(options) {
         if (!options.wheel) {
             return;
         }
+
         this.el().addEventListener(
-            "wheel",
+            'wheel',
             (event) => {
                 if (event.deltaY === 0) {
                     return;
                 }
 
                 event.preventDefault();
-                if (!this.paused()) {
-                    this.pause();
-                }
-                this.currentTime(
-                    this.currentTime() + Math.sign(event.deltaY) * (options.wheel.step ?? 1) / (options.fps ?? 30000 / 1001)
-                );
+                doStep(this, Math.sign(event.deltaY) * (options.wheel.step ?? 1), options.fps);
             },
             { passive: false }
         );
