@@ -42,7 +42,8 @@ function frameByFrame(options) {
                                 innerHTML: `<span class="vjs-fbf">${option.text}</span>`
                             },
                             {
-                                role: 'button'
+                                title: option.title,
+                                role: 'button',
                             }
                         ),
                         step: option.step,

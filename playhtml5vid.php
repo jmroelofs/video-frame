@@ -174,8 +174,8 @@ const player = videojs('my-player', {
 		frameByFrame: {
 			fps: <?php echo trim($fpsInfo); ?>,
 			steps: [
-				{ text: '< 1f', step: -1 },
-				{ text: '1f >', step: 1 }
+                { step: -1, text: '< 1f', title: 'Previous frame (wheel down)' },
+				{ step: 1, text: '1f >', title: 'Next frame (wheel up)' },
 			],
             wheel: { step: 1 }
 		}
