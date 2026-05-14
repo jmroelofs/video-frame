@@ -171,7 +171,7 @@ const player = videojs('my-player', {
     },
 <?php if ($fpsInfo !== false): ?>
 	plugins: {
-		framebyframe: {
+		frameByFrame: {
 			fps: <?php echo trim($fpsInfo); ?>,
 			steps: [
 				{ text: '< 1f', step: -1 },

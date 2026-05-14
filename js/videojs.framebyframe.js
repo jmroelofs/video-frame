@@ -8,7 +8,7 @@
 const
     defaultFps = 30000 / 1001,
 
-    doStep = (player, step, fps) => {
+    adjustPosition = (player, step, fps) => {
         if (!player.paused()) {
             player.pause();
         }
@@ -24,13 +24,13 @@ class FrameByFrameButton extends videojs.getComponent('Button') {
     }
 
     handleClick() {
-        doStep(this.player, this.options.step, this.options.fps);
+        adjustPosition(this.player, this.options.step, this.options.fps);
     }
 }
 
-function framebyframe(options) {
+function frameByFrame(options) {
     this.ready(() => {
-        options.steps.forEach((option) => {
+        options.steps?.forEach((option) => {
             const buttonElement = this.controlBar.addChild(
                 new FrameByFrameButton(
                     this,
@@ -70,7 +70,7 @@ function framebyframe(options) {
                 }
 
                 event.preventDefault();
-                doStep(this, Math.sign(event.deltaY) * (options.wheel.step ?? 1), options.fps);
+                adjustPosition(this, Math.sign(event.deltaY) * (options.wheel.step ?? 1), options.fps);
             },
             { passive: false }
         );
@@ -78,4 +78,4 @@ function framebyframe(options) {
 }
 
 videojs.registerComponent('FrameByFrameButton', FrameByFrameButton);
-videojs.registerPlugin('framebyframe', framebyframe);
+videojs.registerPlugin('frameByFrame', frameByFrame);
