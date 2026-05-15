@@ -4,12 +4,12 @@ declare(strict_types = 1);
 
 const _JEXEC = 1;
 
-header("Access-Control-Allow-Origin: *");
+header('Access-Control-Allow-Origin: *');
 
 // get file name
 $file = '../' . rawurldecode($_GET['file'] ?? '');
 
-// get autoplay, default is 1
+// get autoplay, default is true
 $autoPlay = ($_GET['autoplay'] ?? null !== '0');
 
 // for security
@@ -64,7 +64,7 @@ $fileTime = date(DATE_ATOM, filemtime($file));
 <meta property="og:video" content="<?php echo $videoLink; ?>">
 <meta property="og:video:url" content="<?php echo $currentUrl; ?>">
 <meta property="og:video:type" content="<?php echo $mimeType; ?>">
-<?php if (isset($height) && isset($width)): ?>
+<?php if (isset($height, $width)): ?>
 <meta property="og:video:width" content="<?php echo $width; ?>">
 <meta property="og:video:height" content="<?php echo $height; ?>">
 <meta property="og:image" content="<?php echo $imageLink; ?>">
