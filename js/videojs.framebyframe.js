@@ -31,7 +31,7 @@ class FrameByFrameButton extends videojs.getComponent('Button') {
 function frameByFrame(options) {
     this.ready(() => {
         options.steps?.forEach((option) => {
-            const buttonElement = this.controlBar.addChild(
+            const button = this.controlBar.addChild(
                 new FrameByFrameButton(
                     this,
                     {
@@ -50,10 +50,10 @@ function frameByFrame(options) {
                         fps: options.fps,
                     }
                 )
-            ).el();
+            );
 
             this.controlBar.el().insertBefore(
-                buttonElement,
+                button.el(),
                 this.controlBar.fullscreenToggle.el()
             );
         });
