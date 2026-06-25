@@ -39,7 +39,7 @@ function frameByFrame(options) {
                             'button',
                             {
                                 className: 'vjs-fbf-button vjs-control',
-                                innerHTML: `<span class="vjs-fbf">${option.text}</span>`
+                                innerHTML: `<span class="vjs-fbf-text">${option.text}</span>`
                             },
                             {
                                 title: option.title,
