@@ -8,35 +8,30 @@ header('Access-Control-Allow-Origin: *');
 
 // get file name
 $file = '../' . rawurldecode($_GET['file'] ?? '');
+$mimeType = mime_content_type($file);
 
 // get autoplay, default is true
 $autoPlay = ($_GET['autoplay'] ?? null !== '0');
 
-// for security
-if (
-    ! is_file($file)
-    || ! ($mimeType = mime_content_type($file))
-    || ! str_contains($mimeType, 'video')
-) {
-    require __DIR__ . '/../index.php';
-    exit();
+if (! str_contains((string) $mimeType, 'video')) {
+    http_response_code(404);
+    exit('404 The page you are looking for was not found');
 }
 
 ['extension' => $extension, 'filename' => $fileName] = pathinfo($file);
 
 $protocol = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
-$currentUrl = explode('?', $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'])[0];
+$currentUrl = explode('?', $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'])
+    |> array_first(...);
 
 $videoLink = $protocol
-    . implode(
+    .implode(
         '/',
         [$_SERVER['SERVER_NAME']] + array_map(
-            'rawurlencode',
-             array_filter(
-                explode(
-                    '/',
-                    dirname($_SERVER['SCRIPT_NAME'], 2) . ltrim($file, '..')
-    ))));
+            rawurlencode(...),
+            explode('/', dirname($_SERVER['SCRIPT_NAME'], 2) . ltrim($file, '..'))
+                |> array_filter(...)
+    ));
 
 $image = substr($file, 0, -strlen($extension)) . 'jpg';
 if (is_file($image)){
