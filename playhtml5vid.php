@@ -2,8 +2,6 @@
 
 declare(strict_types = 1);
 
-const _JEXEC = 1;
-
 header('Access-Control-Allow-Origin: *');
 
 // get file name
