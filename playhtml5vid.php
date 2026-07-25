@@ -22,14 +22,17 @@ $protocol = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
 $currentUrl = explode('?', $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'])
     |> array_first(...);
 
-$videoLink = $protocol
-    .implode(
-        '/',
-        [$_SERVER['SERVER_NAME']] + array_map(
+$videoLink = $protocol . implode(
+    '/',
+    [
+        $_SERVER['SERVER_NAME'],
+        ...array_map(
             rawurlencode(...),
             explode('/', dirname($_SERVER['SCRIPT_NAME'], 2) . ltrim($file, '..'))
                 |> array_filter(...)
-    ));
+        )
+    ]
+);
 
 $image = substr($file, 0, -strlen($extension)) . 'jpg';
 if (is_file($image)){
