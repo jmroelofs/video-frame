@@ -205,7 +205,7 @@ if (window.self !== window.top) {
     const jQuery = window.parent.jQuery;
     jQuery('#mediabox-iframe-fix').remove();
     jQuery(`<style id="mediabox-iframe-fix">
-        .wf-mediabox-content-item {
+        .wf-mediabox-content-item:not(:has(.wf-mediabox-iframe-video)) {
             padding-bottom: <?php echo round(100 * $height / $width, 6); ?>% !important;
             height: 0 !important;
         }
