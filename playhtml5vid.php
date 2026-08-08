@@ -21,7 +21,6 @@ if (! str_contains((string) $mimeType, 'video')) {
 $protocol = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
 $currentUrl = explode('?', $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'])
     |> array_first(...);
-
 $videoLink = $protocol . implode(
     '/',
     [
@@ -33,15 +32,15 @@ $videoLink = $protocol . implode(
         )
     ]
 );
+$dirName = dirname($_SERVER['SCRIPT_NAME']);
+$parentDirName = implode('/', explode('/', $dirName, -1));
 
 $image = substr($file, 0, -strlen($extension)) . 'jpg';
 if (is_file($image)){
     [$width, $height] = getimagesize($image);
 }
 $imageLink = substr($videoLink, 0, -strlen($extension)) . 'jpg';
-
 $fpsInfo = file_get_contents(substr($file, 0, -strlen($extension)) . 'framerate.txt');
-
 $fileTime = date(DATE_ATOM, filemtime($file));
 
 ?>
@@ -72,11 +71,11 @@ $fileTime = date(DATE_ATOM, filemtime($file));
 <meta property="og:url" content="<?php echo $currentUrl; ?>">
 <title>Roelofs Coaching - <?php echo $fileName; ?></title>
 <link href="<?php echo $currentUrl; ?>" rel="canonical">
-<link href="<?php echo implode('/', explode('/', dirname($_SERVER['SCRIPT_NAME']), -1)); ?>/templates/purity_iii/favicon.ico" rel="shortcut icon" type="image/x-icon">
-<link href="<?php echo dirname($_SERVER['SCRIPT_NAME']); ?>/css/video-js.min.css" rel="stylesheet">
-<link href="<?php echo dirname($_SERVER['SCRIPT_NAME']) ?>/css/videojs.framebyframe.css" rel="stylesheet">
-<script src="<?php echo dirname($_SERVER['SCRIPT_NAME']); ?>/js/video.min.js"></script>
-<script src="<?php echo dirname($_SERVER['SCRIPT_NAME']); ?>/js/videojs.framebyframe.js"></script>
+<link href="<?php echo $parentDirName; ?>/templates/purity_iii/favicon.ico" rel="shortcut icon" type="image/x-icon">
+<link href="<?php echo $dirName; ?>/css/video-js.min.css" rel="stylesheet">
+<link href="<?php echo $dirName ?>/css/videojs.framebyframe.css" rel="stylesheet">
+<script src="<?php echo $dirName; ?>/js/video.min.js"></script>
+<script src="<?php echo $dirName; ?>/js/videojs.framebyframe.js"></script>
 <style>
     @-ms-viewport     {width: device-width;}
     @-o-viewport      {width: device-width;}
