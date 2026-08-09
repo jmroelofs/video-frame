@@ -168,6 +168,10 @@ const player = videojs('my-player', {
 	plugins: {
 		frameByFrame: {
 			fps: <?php echo trim($fpsInfo); ?>,
+            buttons: [
+                { step: -1, text: '<&hairsp;1f', title: 'Previous frame (wheel down)' },
+                { step: 1, text: '1f&hairsp;>', title: 'Next frame (wheel up)' },
+            ],
             wheel: { step: 1 }
 		}
 	},

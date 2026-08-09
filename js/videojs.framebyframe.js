@@ -9,8 +9,8 @@ const
     defaultFps = 30000 / 1001,
     defaultStep = 1,
     defaultButtons = [
-        { step: -1, text: '<&hairsp;1f', title: 'Previous frame (wheel down)' },
-        { step: 1, text: '1f&hairsp;>', title: 'Next frame (wheel up)' },
+        { step: -1, text: '<&hairsp;1f', title: 'Previous frame' },
+        { step: 1, text: '1f&hairsp;>', title: 'Next frame' },
     ],
 
     adjustPosition = (player, step, fps) => {
