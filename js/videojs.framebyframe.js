@@ -6,11 +6,16 @@
 "use strict";
 
 const
-    defaultFps = 30000/1001,
+    defaultFps = 30000 / 1001,
+    defaultStep = 1,
+    defaultButtons = [
+        { step: -1, text: '<&hairsp;1f', title: 'Previous frame (wheel down)' },
+        { step: 1, text: '1f&hairsp;>', title: 'Next frame (wheel up)' },
+    ],
 
     adjustPosition = (player, step, fps) => {
         player.paused()
-        || player.pause();
+            || player.pause();
         player.currentTime(player.currentTime() + step / fps);
     }
 
@@ -26,7 +31,7 @@ class FrameByFrameButton extends videojs.getComponent('Button') {
     }
 }
 
-function frameByFrame({fps = defaultFps, buttons = [], wheel} = {}) {
+function frameByFrame({ fps = defaultFps, buttons = defaultButtons, wheel } = {}) {
     this.ready(() => {
         buttons.forEach((option) => {
             const button = this.controlBar.addChild(
@@ -44,7 +49,7 @@ function frameByFrame({fps = defaultFps, buttons = [], wheel} = {}) {
                                 role: 'button',
                             }
                         ),
-                        step: option.step,
+                        step: option.step ?? defaultStep,
                         fps: fps,
                     }
                 )
@@ -58,18 +63,18 @@ function frameByFrame({fps = defaultFps, buttons = [], wheel} = {}) {
 
         // Add mouse wheel support
         wheel
-        && this.el().addEventListener(
-            'wheel',
-            (event) => {
-                if (event.deltaY === 0) {
-                    return;
-                }
+            && this.el().addEventListener(
+                'wheel',
+                (event) => {
+                    if (event.deltaY === 0) {
+                        return;
+                    }
 
-                event.preventDefault();
-                adjustPosition(this, Math.sign(event.deltaY) * (wheel.step ?? 1), fps);
-            },
-            { passive: false }
-        );
+                    event.preventDefault();
+                    adjustPosition(this, Math.sign(event.deltaY) * (wheel.step ?? defaultStep), fps);
+                },
+                { passive: false }
+            );
     });
 }
 
