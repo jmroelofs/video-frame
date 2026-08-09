@@ -6,14 +6,12 @@
 "use strict";
 
 const
-    defaultFps = 30000 / 1001,
+    defaultFps = 30000/1001,
 
-    adjustPosition = (player, step, fps) => {
-        if (!player.paused()) {
-            player.pause();
-        }
-
-        player.currentTime(player.currentTime() + step / (fps ?? defaultFps));
+    adjustPosition = (player, step, fps = defaultFps) => {
+        player.paused()
+        || player.pause();
+        player.currentTime(player.currentTime() + step / fps);
     }
 
 class FrameByFrameButton extends videojs.getComponent('Button') {
@@ -59,11 +57,8 @@ function frameByFrame(options) {
         });
 
         // Add mouse wheel support
-        if (!options.wheel) {
-            return;
-        }
-
-        this.el().addEventListener(
+        options.wheel
+        && this.el().addEventListener(
             'wheel',
             (event) => {
                 if (event.deltaY === 0) {
