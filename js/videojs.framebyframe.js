@@ -8,7 +8,7 @@
 const
     defaultFps = 30000/1001,
 
-    adjustPosition = (player, step, fps = defaultFps) => {
+    adjustPosition = (player, step, fps) => {
         player.paused()
         || player.pause();
         player.currentTime(player.currentTime() + step / fps);
@@ -26,9 +26,9 @@ class FrameByFrameButton extends videojs.getComponent('Button') {
     }
 }
 
-function frameByFrame(options) {
+function frameByFrame({fps = defaultFps, buttons = [], wheel} = {}) {
     this.ready(() => {
-        options.steps?.forEach((option) => {
+        buttons.forEach((option) => {
             const button = this.controlBar.addChild(
                 new FrameByFrameButton(
                     this,
@@ -45,7 +45,7 @@ function frameByFrame(options) {
                             }
                         ),
                         step: option.step,
-                        fps: options.fps,
+                        fps: fps,
                     }
                 )
             );
@@ -57,7 +57,7 @@ function frameByFrame(options) {
         });
 
         // Add mouse wheel support
-        options.wheel
+        wheel
         && this.el().addEventListener(
             'wheel',
             (event) => {
@@ -66,7 +66,7 @@ function frameByFrame(options) {
                 }
 
                 event.preventDefault();
-                adjustPosition(this, Math.sign(event.deltaY) * (options.wheel.step ?? 1), options.fps);
+                adjustPosition(this, Math.sign(event.deltaY) * (wheel.step ?? 1), fps);
             },
             { passive: false }
         );
