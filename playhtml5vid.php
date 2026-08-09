@@ -30,7 +30,7 @@ $videoLink = $protocol . implode(
         ...array_map(
             rawurlencode(...),
             explode('/', $parentDirName . ltrim($file, '..'))
-            |> array_filter(...)
+                |> array_filter(...)
         )
     ]
 );
