@@ -21,19 +21,19 @@ if (! str_contains((string) $mimeType, 'video')) {
 $protocol = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
 $currentUrl = explode('?', $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'])
     |> array_first(...);
+$dirName = dirname($_SERVER['SCRIPT_NAME']);
+$parentDirName = implode('/', explode('/', $dirName, -1));
 $videoLink = $protocol . implode(
     '/',
     [
         $_SERVER['SERVER_NAME'],
         ...array_map(
             rawurlencode(...),
-            explode('/', dirname($_SERVER['SCRIPT_NAME'], 2) . ltrim($file, '..'))
-                |> array_filter(...)
+            explode('/', $parentDirName . ltrim($file, '..'))
+            |> array_filter(...)
         )
     ]
 );
-$dirName = dirname($_SERVER['SCRIPT_NAME']);
-$parentDirName = implode('/', explode('/', $dirName, -1));
 
 $image = substr($file, 0, -strlen($extension)) . 'jpg';
 if (is_file($image)){
