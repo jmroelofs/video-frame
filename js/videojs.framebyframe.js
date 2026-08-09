@@ -46,7 +46,7 @@ function frameByFrame({ fps = defaultFps, buttons = defaultButtons, wheel }) {
                             },
                             {
                                 title: option.title,
-                                role: 'button',
+                                type: 'button',
                             }
                         ),
                         step: option.step ?? defaultStep,
