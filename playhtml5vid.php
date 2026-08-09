@@ -4,43 +4,28 @@ declare(strict_types = 1);
 
 header('Access-Control-Allow-Origin: *');
 
-// get file name
-$file = '../' . rawurldecode($_GET['file'] ?? '');
+$fileUrl = $_GET['file'] ?? '';
+$file = '../' . rawurldecode($fileUrl);
 $mimeType = mime_content_type($file);
 
 // get autoplay, default is true
-$autoPlay = ($_GET['autoplay'] ?? null !== '0');
+// $autoPlay = ($_GET['autoplay'] ?? null !== '0');
 
 if (! str_contains((string) $mimeType, 'video')) {
     http_response_code(404);
     exit('404 The page you are looking for was not found');
 }
 
-['extension' => $extension, 'filename' => $fileName] = pathinfo($file);
-
+['dirname' => $fileDirName, 'extension' => $fileExtension, 'filename' => $fileName] = pathinfo($file);
 $protocol = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
-$currentUrl = explode('?', $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'])
-    |> array_first(...);
+$currentUrl = explode('?', "{$protocol}{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}")[0];
 $dirName = dirname($_SERVER['SCRIPT_NAME']);
 $parentDirName = implode('/', explode('/', $dirName, -1));
-$videoLink = $protocol . implode(
-    '/',
-    [
-        $_SERVER['SERVER_NAME'],
-        ...array_map(
-            rawurlencode(...),
-            explode('/', $parentDirName . ltrim($file, '..'))
-                |> array_filter(...)
-        )
-    ]
-);
-
-$image = substr($file, 0, -strlen($extension)) . 'jpg';
-if (is_file($image)){
-    [$width, $height] = getimagesize($image);
-}
-$imageLink = substr($videoLink, 0, -strlen($extension)) . 'jpg';
-$fpsInfo = file_get_contents(substr($file, 0, -strlen($extension)) . 'framerate.txt');
+$videoUrl = $protocol . implode('/', explode('/', "{$_SERVER['SERVER_NAME']}{$parentDirName}/{$fileUrl}"));
+$image = "{$fileDirName}/{$fileName}.jpg";
+is_file($image) && [$width, $height] = getimagesize($image);
+$imageUrl = substr($videoUrl, 0, -strlen($fileExtension)) . 'jpg';
+$fpsInfo = "{$fileDirName}/{$fileName}.framerate.txt" |> file_get_contents(...);
 $fileTime = date(DATE_ATOM, filemtime($file));
 
 ?>
@@ -56,13 +41,13 @@ $fileTime = date(DATE_ATOM, filemtime($file));
 <meta name="theme-color" content="#444444">
 <meta property="og:title" content="Roelofs Coaching - <?php echo $fileName; ?>">
 <meta property="og:type" content="video">
-<meta property="og:video" content="<?php echo $videoLink; ?>">
+<meta property="og:video" content="<?php echo $videoUrl; ?>">
 <meta property="og:video:url" content="<?php echo $currentUrl; ?>">
 <meta property="og:video:type" content="<?php echo $mimeType; ?>">
 <?php if (isset($height, $width)): ?>
 <meta property="og:video:width" content="<?php echo $width; ?>">
 <meta property="og:video:height" content="<?php echo $height; ?>">
-<meta property="og:image" content="<?php echo $imageLink; ?>">
+<meta property="og:image" content="<?php echo $imageUrl; ?>">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="<?php echo $width; ?>">
 <meta property="og:image:height" content="<?php echo $height; ?>">
@@ -115,12 +100,12 @@ $fileTime = date(DATE_ATOM, filemtime($file));
     "name": "<?php echo $fileName; ?>",
     "@id": "<?php echo $currentUrl ?>",
     "description": "<?php echo $fileName; ?> is made and hosted by Roelofs Coaching",
-    "contentURL": "<?php echo $videoLink; ?>",
+    "contentURL": "<?php echo $videoUrl; ?>",
     "embedUrl": "<?php echo $currentUrl ?>",
 <?php if (isset($height) && isset($width)): ?>
     "height": <?php echo $height; ?>,
     "width": <?php echo $width; ?>,
-    "thumbnailUrl": "<?php echo $imageLink; ?>",
+    "thumbnailUrl": "<?php echo $imageUrl; ?>",
     "uploadDate": "<?php echo $fileTime; ?>",
 <?php endif ?>
     "author": {
@@ -138,9 +123,9 @@ $fileTime = date(DATE_ATOM, filemtime($file));
         class="video-js"
         controls
         preload="auto"
-        poster="<?php echo $imageLink; ?>"
+        poster="<?php echo $imageUrl; ?>"
     >
-        <source src="<?php echo $videoLink; ?>" type="<?php echo $mimeType; ?>">
+        <source src="<?php echo $videoUrl; ?>" type="<?php echo $mimeType; ?>">
         <p class="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading to a
             web browser that
