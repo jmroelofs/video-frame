@@ -5,7 +5,7 @@ declare(strict_types = 1);
 header('Access-Control-Allow-Origin: *');
 
 $fileUrl = $_GET['file'] ?? '';
-$file = '../' . rawurldecode($fileUrl);
+$file = "../{$fileUrl}";
 $mimeType = mime_content_type($file);
 
 // get autoplay, default is true
@@ -18,7 +18,7 @@ if (! str_contains((string) $mimeType, 'video')) {
 
 ['dirname' => $fileDirName, 'extension' => $fileExtension, 'filename' => $fileName] = pathinfo($file);
 $protocol = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
-$currentUrl = explode('?', "{$protocol}{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}")[0];
+$currentUrl = explode('?', "{$protocol}{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}")[0] |> rawurldecode(...);
 $dirName = dirname($_SERVER['SCRIPT_NAME']);
 $parentDirName = implode('/', explode('/', $dirName, -1));
 $videoUrl = "{$protocol}{$_SERVER['SERVER_NAME']}{$parentDirName}/{$fileUrl}";
