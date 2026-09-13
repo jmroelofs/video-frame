@@ -1,7 +1,10 @@
-// videojs-framebyframe-plugin
-//
-// copied from https://github.com/douglassllc/videojs-framebyframe
-// adjusted it's button placement which was giving an error
+/*
+    videojs-framebyframe-plugin
+
+    copied from https://github.com/douglassllc/videojs-framebyframe
+    adjusted it's button placement which was giving an error
+    added mouse wheel support and cleaned up code
+*/
 
 "use strict";
 
@@ -74,5 +77,4 @@ function frameByFrame({ fps = defaultFps, buttons = defaultButtons, wheel }) {
     });
 }
 
-videojs.registerComponent('FrameByFrameButton', FrameByFrameButton);
 videojs.registerPlugin('frameByFrame', frameByFrame);
